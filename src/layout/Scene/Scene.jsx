@@ -1,18 +1,18 @@
-import React, { useRef } from "react";
-import { Canvas } from "@react-three/fiber";
 import {
-  OrbitControls,
-  Stats,
+  Environment,
   Grid,
-  TransformControls,
+  OrbitControls,
+  TransformControls
 } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+import { useRef } from "react";
+import CaptureController from "../../components/CaptureController/CaptureController";
 import ObjectRenderer from "../../components/ObjectRenderer/ObjectRenderer";
 import useStore from "../../zustandStore/store";
-import CaptureController from "../../components/CaptureController/CaptureController";
 
 const Scene = () => {
   // Get state and actions from the store
-  const { objects, selectedObjectId,setSelectedObjectId, updateObjectProperties } =
+  const { objects, selectedObjectId,setSelectedObjectId, updateObjectProperties, addObject } =
     useStore();
 
   const sceneRef = useRef();
@@ -28,19 +28,34 @@ const Scene = () => {
     updateObjectProperties(selectedObjectId, { position: newPosition });
   };
 
+  const handleDragOver = (event)=> {
+    event.preventDefault();
+  }
+
+  const handleDrop = (event)=> {
+    event.preventDefault(); 
+
+    const shapeId = event.dataTransfer.getData("text/plain");
+
+    if(shapeId){
+      addObject(shapeId)
+    }
+  }
+
   return (
     // The Canvas component takes up the full space of its container div
-    <div className="w-full h-full">
+    <div className="w-full h-full" onDragOver={handleDragOver} onDrop={handleDrop}>
       <Canvas  gl={{ preserveDrawingBuffer: true }}  onPointerMissed={() => setSelectedObjectId(null)} shadows camera={{ position: [5, 5, 5], fov: 50 }}>
         <scene ref={sceneRef}>
           {/* Set a background color for the scene */}
           <color attach="background" args={["#202025"]} />
 
           {/* Essential lighting */}
-          <ambientLight intensity={0.5} />
+          <ambientLight intensity={2} color={"ffffff"}/>
+          {/* <Environment preset="studio" environmentIntensity={0.5}/> */}
           <directionalLight
             position={[10, 10, 5]}
-            intensity={1.5}
+            intensity={2.5}
             castShadow
             shadow-mapSize-width={2048}
             shadow-mapSize-height={2048}
@@ -58,7 +73,7 @@ const Scene = () => {
           )}
 
           {/* A grid helper for perspective */}
-          <Grid infiniteGrid sectionColor={"#505050"} />
+          {/* <Grid infiniteGrid sectionColor={"#505050"} /> */}
         </scene>
         {/* Camera controls allow user interaction */}
         <OrbitControls makeDefault />

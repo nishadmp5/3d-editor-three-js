@@ -5,10 +5,14 @@ import TransformInputRow from "../../components/TransformInputRow/TransformInput
 import TransformProperties from "../../components/TransformProperties/TransformProperties";
 
 const Sidebar = () => {
-  const addObject = useStore((state) => state.addObject);
+  // const addObject = useStore((state) => state.addObject);
 
-  const handleObjectAddClick = (shapeId) => {
-    addObject(shapeId);
+  // const handleObjectAddClick = (shapeId) => {
+  //   addObject(shapeId);
+  // };
+
+  const handleDragStart = (event, shapeId) => {
+    event.dataTransfer.setData("text/plain", shapeId);
   };
 
   return (
@@ -19,16 +23,24 @@ const Sidebar = () => {
         <div className="grid grid-cols-2 gap-2">
           {SHAPES.map((shapeData) => (
             <button
-              onClick={() => handleObjectAddClick(shapeData.shapeId)}
-              className="bg-gray-200 hover:bg-gray-300 p-2 rounded"
+              draggable="true"
+              // onClick={() => handleObjectAddClick(shapeData.shapeId)}
+              onDragStart={(e) => handleDragStart(e, shapeData.shapeId)}
+              className="bg-white p-2 rounded-md border border-gray-200 flex flex-col items-center justify-center hover:border-blue-500 hover:shadow-sm transition-all duration-150"
+              title={`Drag to add ${shapeData.name}`}
             >
+              <img
+                src={shapeData.image}
+                alt={shapeData.name}
+                className="w-12 h-12 object-contain pointer-events-none"
+              />
               {shapeData.name}
             </button>
           ))}
         </div>
       </div>
 
-          <TransformProperties/>
+      <TransformProperties />
     </div>
   );
 };

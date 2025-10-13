@@ -3,7 +3,7 @@ import useStore from "../../zustandStore/store";
 import { SHAPES_MAP } from "../../constants/shapeConfigs";
 
 const ObjectRenderer = ({ objectProps }) => {
-  const { shapeId, id } = objectProps;
+  const { shapeId, id, position, rotation, scale } = objectProps || {};
   const { setSelectedObjectId } = useStore();
 
   const handleObjectClick = (e) => {
@@ -11,20 +11,40 @@ const ObjectRenderer = ({ objectProps }) => {
     setSelectedObjectId(id);
   };
 
-  const geometry = SHAPES_MAP[shapeId]?.geometry;
-  return (
+  const shapeConfig = SHAPES_MAP[shapeId];
+    if (!shapeConfig) {
+    console.error(`Shape with shapeId "${shapeId}" not found.`);
+    return null; 
+  }
+
+  const commonProps = {
+    name:id,
+    onClick:handleObjectClick,
+    position,
+    rotation,
+    scale
+  }
+
+  if(shapeConfig.type === "primitive"){
+    return (
     <mesh
-      name={objectProps.id}
-      onClick={handleObjectClick}
-      position={objectProps.position}
-      rotation={objectProps.rotation}
-      scale={objectProps.scale}
+      {...commonProps}
       castShadow
     >
-      {geometry}
+      {shapeConfig.geometry}
       <meshStandardMaterial color="royalblue" />
     </mesh>
   );
+  }
+  if(shapeConfig.type === "model"){
+    const ModelComponent = shapeConfig.component;
+    return(
+      <ModelComponent {...commonProps}/>
+    )
+  }
+
+  return null
+  
 };
 
 export default ObjectRenderer;

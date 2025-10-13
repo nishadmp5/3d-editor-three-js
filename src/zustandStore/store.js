@@ -1,7 +1,11 @@
 import { create } from "zustand";
 import { SHAPES_MAP } from "../constants/shapeConfigs";
+import { temporal } from 'zundo';
+import { useStoreWithEqualityFn } from "zustand/traditional";
+import { shallow } from "zustand/shallow";
 
-const useStore = create((set) => ({
+
+const useStore = create(temporal((set) => ({
   // States
   objects: [],
   selectedObjectId: null,
@@ -40,6 +44,13 @@ const useStore = create((set) => ({
     }));
   },
 
+  deleteObject: (id)=> {
+    set((state)=>({
+      selectedObjectId:null,
+      objects: state.objects.filter((obj)=>obj.id !== id)
+    }))
+  },
+
   // Action to set the selected object
   setSelectedObjectId: (id)=>{
     set({selectedObjectId:id})
@@ -52,7 +63,13 @@ const useStore = create((set) => ({
     }))
    }
 
+}),{
+  partialize: (state)=> ({objects:state.objects})
 }));
+
+const temporalStore = useStore.temporal; 
+export const useTemporalStore = (selector, equalityFn = shallow) =>
+  useStoreWithEqualityFn(temporalStore, selector, equalityFn);
 
 
 export default useStore

@@ -5,12 +5,6 @@ import TransformInputRow from "../../components/TransformInputRow/TransformInput
 import TransformProperties from "../../components/TransformProperties/TransformProperties";
 
 const Sidebar = () => {
-  // const addObject = useStore((state) => state.addObject);
-
-  // const handleObjectAddClick = (shapeId) => {
-  //   addObject(shapeId);
-  // };
-
   const handleDragStart = (event, shapeId) => {
     event.dataTransfer.setData("text/plain", shapeId);
   };
@@ -21,12 +15,12 @@ const Sidebar = () => {
       <div className="mb-6">
         <h2 className="text-lg font-semibold mb-3 border-b pb-2">Add Object</h2>
         <div className="grid grid-cols-2 gap-2">
-          {SHAPES.map((shapeData) => (
+          {SHAPES.map((shapeData,index) => (
             <button
+            key={`shape-${index}`}
               draggable="true"
-              // onClick={() => handleObjectAddClick(shapeData.shapeId)}
               onDragStart={(e) => handleDragStart(e, shapeData.shapeId)}
-              className="bg-white p-2 rounded-md border border-gray-200 flex flex-col items-center justify-center hover:border-blue-500 hover:shadow-sm transition-all duration-150"
+              className="bg-white rounded-md border border-gray-200 flex flex-col items-center justify-center hover:border-blue-500 hover:shadow-sm transition-all duration-150"
               title={`Drag to add ${shapeData.name}`}
             >
               <img

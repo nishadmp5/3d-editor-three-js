@@ -11,6 +11,14 @@ const useStore = create(temporal((set) => ({
   selectedObjectId: null,
    saveRequest: 0,
 
+  //  Context Menu state 
+  contextMenu:{
+    visible: false,
+    x:0,
+    y:0,
+    targetId:null
+  },
+
   // Actions
 
   //Action to trigger save request
@@ -25,6 +33,7 @@ const useStore = create(temporal((set) => ({
       console.error(`Shape type "${shapeId}" not found in shapeConfig.`);
       return; 
     }
+    const scaleFactor = shapeConfig.defaultProps.scaleFactor || 1;
     set((state) => ({
       objects: [
         ...state.objects,
@@ -33,12 +42,11 @@ const useStore = create(temporal((set) => ({
           id: Date.now(),
           shapeId: shapeId,
           position: [
-            (Math.random() - 0.5) * 4, 
-            0.5, 
-            (Math.random() - 0.5) * 4, 
+            (Math.random() - 0.5) * 9.64, 
+            shapeConfig.defaultProps.position[1],
+            (Math.random() - 0.5) * 8.14,
           ],
-          rotation: [0, 0, 0],
-          scale: [1, 1, 1],
+           scale: [scaleFactor, scaleFactor, scaleFactor],
         },
       ],
     }));
@@ -61,7 +69,16 @@ const useStore = create(temporal((set) => ({
     set((state)=>({
         objects: state.objects.map((obj)=> obj.id === id ?  { ...obj,...newProps}: obj)
     }))
-   }
+   },
+
+  //  Context Menu Actions 
+  openContextMenu: (x,y,targetId)=>{
+    set({ contextMenu: {visible:true,x,y,targetId} })
+  },
+
+  closeContextMenu: ()=> {
+    set((state) => ({ contextMenu: { ...state.contextMenu, visible: false } }));
+  },
 
 }),{
   partialize: (state)=> ({objects:state.objects})

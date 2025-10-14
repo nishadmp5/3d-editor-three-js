@@ -27,7 +27,6 @@ const TransformProperties = () => {
 
   const position = selectedObject ? selectedObject.position : [1, 1, 1];
   const rotation = selectedObject ? selectedObject.rotation : [1, 1, 1];
-  const scale = selectedObject ? selectedObject.scale : [1, 1, 1];
 
   return (
     <div>
@@ -43,7 +42,6 @@ const TransformProperties = () => {
         <h3 className="font-bold text-md">Transform</h3>
         <TransformInputRow label="Position" values={position.map((p)=> p.toFixed(2))} onValueChange={(axis,value) => handlePropertyChange("position",axis,value)} />
         <TransformInputRow label="Rotation"  values={rotation.map(r => (r * 180 / Math.PI).toFixed(1))}  onValueChange={(axis,value) => handlePropertyChange("rotation",axis,value)}/>
-        <TransformInputRow label="Scale" values={scale.map(s => s.toFixed(2))} onValueChange={(axis,value) => handlePropertyChange("scale",axis,value)} />
       </div>
 
        <div className="mt-6">

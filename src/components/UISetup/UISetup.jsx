@@ -2,6 +2,7 @@ import React from "react";
 import Topbar from "../../layout/Topbar/Topbar";
 import Scene from "../../layout/Scene/Scene";
 import Sidebar from "../../layout/Sidebar/Sidebar";
+import ContextMenu from "../ContextMenu/ContextMenu";
 
 const UISetup = () => {
   return (
@@ -15,6 +16,7 @@ const UISetup = () => {
           <Sidebar />
         </div>
       </div>
+      <ContextMenu/>
     </div>
   );
 };

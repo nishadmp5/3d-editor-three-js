@@ -21,7 +21,6 @@ const ContextMenu = () => {
 
   return (
     <>
-      {/* Overlay to catch clicks outside the menu */}
       <div className="fixed inset-0 z-40" onClick={closeContextMenu} />
       
       <div

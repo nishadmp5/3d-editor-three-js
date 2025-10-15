@@ -1,1 +1,33 @@
 @import "tailwindcss";
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400; 
+  font-display: swap;
+  src: url("./assets/fonts/Inter_18pt-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700; 
+  font-display: swap;
+  src: url("./assets/fonts/Inter_18pt-Bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 900; 
+  font-display: swap;
+  src: url("./assets/fonts/Inter_18pt-Black.woff2") format("woff2");
+}
+
+
+@theme {
+  --default-font-family: "Inter", sans-serif;
+  --color-primary: #6491D8;
+  --color-secondary: #f3f4f6;
+  --color-grayborder: #e5e7eb;
+}

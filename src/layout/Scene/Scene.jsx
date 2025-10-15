@@ -1,15 +1,14 @@
 import {
   Environment,
-  Grid,
   OrbitControls,
-  TransformControls,
+  TransformControls
 } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { useRef } from "react";
 import CaptureController from "../../components/CaptureController/CaptureController";
 import ObjectRenderer from "../../components/ObjectRenderer/ObjectRenderer";
-import useStore from "../../zustandStore/store";
 import RoomEnvironment from "../../components/RoomEnvironment/RoomEnvironment";
+import useStore from "../../zustandStore/store";
 
 
 const Scene = () => {
@@ -24,6 +23,8 @@ const Scene = () => {
 
   const sceneRef = useRef();
   const selectedObject = sceneRef.current?.getObjectByName(selectedObjectId);
+  const selectedObjectConfig = objects.find((obj)=> obj.id === selectedObjectId)
+
 
   const handleTransform = (e) => {
     const newPosition = [
@@ -50,7 +51,6 @@ const Scene = () => {
   };
 
   return (
-    // The Canvas component takes up the full space of its container div
     <div
       className="w-full h-full"
       onDragOver={handleDragOver}
@@ -63,14 +63,12 @@ const Scene = () => {
         camera={{ position: [0, 1.7, 4], fov: 60 }}
       >
         <scene ref={sceneRef}>
-          {/* Set a background color for the scene */}
           <color attach="background" args={["#202025"]} />
 
-          {/* Essential lighting */}
           <ambientLight intensity={0.8} />
           <pointLight position={[0, 3, 0]} intensity={20} castShadow />
-          {/* <Environment preset="studio" environmentIntensity={0.5}/> */}
-          <directionalLight position={[10, 10, 5]} intensity={0.5} />
+          <Environment preset="apartment" environmentIntensity={0.5}/>
+          {/* <directionalLight position={[10, 10, 5]} intensity={0.5} /> */}
 
           <RoomEnvironment />
 
@@ -80,6 +78,9 @@ const Scene = () => {
 
           {selectedObjectId && selectedObject && (
             <TransformControls
+            showX={selectedObjectConfig.showX}
+            showY={selectedObjectConfig.showY}
+            showZ={selectedObjectConfig.showZ}
               object={selectedObject}
               onMouseUp={handleTransform}
             />
@@ -91,7 +92,7 @@ const Scene = () => {
           target={[0, 1, 0]}
           maxPolarAngle={Math.PI / 2.05}
           minDistance={1}
-          maxDistance={4.5}
+          maxDistance={4.25}
         />
         <CaptureController />
       </Canvas>

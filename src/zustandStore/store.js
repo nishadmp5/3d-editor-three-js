@@ -10,6 +10,7 @@ const useStore = create(temporal((set) => ({
   objects: [],
   selectedObjectId: null,
    saveRequest: 0,
+   saveOption:"top",
 
   //  Context Menu state 
   contextMenu:{
@@ -19,11 +20,21 @@ const useStore = create(temporal((set) => ({
     targetId:null
   },
 
+  // File Name states
+  projectName:"My Room in 3D",
+
+
+
   // Actions
 
+  // Action to set projectName 
+  setProjectName: (name)=> {
+    set(()=>({projectName: name}))
+  },
+
   //Action to trigger save request
-  triggerSave: () => {
-    set((state)=>({ saveRequest: state.saveRequest + 1}))
+  triggerSave: (option) => {
+    set((state)=>({ saveRequest: state.saveRequest + 1,saveOption: option}))
   },
 
  // Action to add an object

@@ -1,5 +1,5 @@
 import React from 'react'
-import UISetup from './components/UISetup/UISetup'
+import UISetup from './layout/UISetup/UISetup'
 
 const App = () => {
   return (

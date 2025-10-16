@@ -10,10 +10,10 @@ const Sidebar = () => {
       <Logo />
       <div className="w-full h-full overflow-y-scroll pb-20 bg-secondary  border-r border-gray-300">
         <RoomSettings/>
+        <TransformProperties />
         <AssetsListing />
 
         <TextureListing/>
-        <TransformProperties />
       </div>
     </div>
   );

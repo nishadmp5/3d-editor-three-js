@@ -21,7 +21,6 @@ const SaveButton = () => {
   }, []);
 
   const handleSaveOptionClick = (option) => {
-    console.log(`Triggering save for view: ${option}`);
     triggerSave(option);
     setIsSaveMenuOpen(false);
   };

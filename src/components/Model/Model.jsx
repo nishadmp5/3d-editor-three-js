@@ -1,6 +1,5 @@
 import { useGLTF } from "@react-three/drei";
 import { useEffect, useMemo, useRef } from "react";
-import ApplyTexture from "../ApplyTexture/ApplyTexture";
 import * as THREE from "three";
 
 const Model = ({ path, materialProps, ...props }) => {

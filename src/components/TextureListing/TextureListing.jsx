@@ -47,7 +47,7 @@ const TextureListing = () => {
             <button
               key={texture.name}
               onClick={() => handleTextureSelect(texture.path)}
-              className="group aspect-square w-full rounded-md overflow-hidden border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 hover:border-blue-500 transition-all"
+              className="group aspect-square w-full rounded-md overflow-hidden border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 hover:border-primary transition-all"
               title={`Apply ${texture.name} texture`}
             >
               <img

@@ -4,7 +4,7 @@ import {
   TransformControls
 } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import CaptureController from "../../components/CaptureController/CaptureController";
 import ObjectRenderer from "../../components/ObjectRenderer/ObjectRenderer";
 import RoomEnvironment from "../../components/RoomEnvironment/RoomEnvironment";
@@ -19,12 +19,23 @@ const Scene = () => {
     setSelectedObjectId,
     updateObjectProperties,
     addObject,
+    setLastEditedProperty,
+    roomSettings,
   } = useStore();
-
+  
   const sceneRef = useRef();
   const selectedObject = sceneRef.current?.getObjectByName(selectedObjectId);
   const selectedObjectConfig = objects.find((obj)=> obj.id === selectedObjectId)
 
+  const handleGizmoMouseDown = (event)=> {
+    const axis =  event.target.axis;
+    if(!axis) return
+
+    const property = selectedObjectConfig.transformMode === "rotate" ? "rotation" : "position"
+    const axisMap = { X:0, Y:1, Z:2}
+    
+    setLastEditedProperty(property,axisMap[axis])
+  }
 
   const handleTransform = (e) => {
     const newPosition = [
@@ -32,8 +43,12 @@ const Scene = () => {
       e.target.object.position.y,
       e.target.object.position.z,
     ];
-    // Update the object's position in our central store
-    updateObjectProperties(selectedObjectId, { position: newPosition });
+     const newRotation = [
+      e.target.object.rotation.x,
+      e.target.object.rotation.y,
+      e.target.object.rotation.z,
+    ];
+    updateObjectProperties(selectedObjectId, { position: newPosition,rotation:newRotation });
   };
 
   const handleDragOver = (event) => {
@@ -50,6 +65,37 @@ const Scene = () => {
     }
   };
 
+  useEffect(()=>{
+    const handleKeyDown = (event)=>{
+      const { selectedObjectId, lastEditedProperty, objects, updateObjectProperties } = useStore.getState();
+
+      if(!selectedObjectId && !lastEditedProperty.property) return;
+      if(event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+
+      event.preventDefault();
+
+      const selectedObject = objects.find((obj)=> obj.id === selectedObjectId);
+      if(!selectedObject) return;
+
+      const { property,axis } = lastEditedProperty;
+
+      let increment = event.key === "ArrowUp" ? 0.1 : -0.1;
+      if (property === 'rotation') {
+        increment = event.key === 'ArrowUp' ? (1 * Math.PI / 180) : (-1 * Math.PI / 180);
+      }
+
+      const newValues = [...selectedObject[property]];
+      newValues[axis] = parseFloat((newValues[axis] + increment).toFixed(4));
+
+      updateObjectProperties(selectedObjectId,{[property]: newValues})
+    }
+
+    window.addEventListener("keydown",handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  },[])
+
   return (
     <div
       className="w-full h-full"
@@ -65,9 +111,10 @@ const Scene = () => {
         <scene ref={sceneRef}>
           <color attach="background" args={["#202025"]} />
 
-          <ambientLight intensity={0.8} />
+          <ambientLight intensity={1.5} />
           <pointLight position={[0, 3, 0]} intensity={20} castShadow />
-          <Environment preset="apartment" environmentIntensity={0.5}/>
+          <Environment preset="apartment" environmentIntensity={roomSettings.roomBrightness * 0.5} />
+
           {/* <directionalLight position={[10, 10, 5]} intensity={0.5} /> */}
 
           <RoomEnvironment />
@@ -78,11 +125,13 @@ const Scene = () => {
 
           {selectedObjectId && selectedObject && (
             <TransformControls
-            showX={selectedObjectConfig.showX}
-            showY={selectedObjectConfig.showY}
-            showZ={selectedObjectConfig.showZ}
+            mode={selectedObjectConfig.transformMode}
+            showX={selectedObjectConfig.axisVisibility[selectedObjectConfig.transformMode].showX}
+            showY={selectedObjectConfig.axisVisibility[selectedObjectConfig.transformMode].showY}
+            showZ={selectedObjectConfig.axisVisibility[selectedObjectConfig.transformMode].showZ}
               object={selectedObject}
               onMouseUp={handleTransform}
+              onMouseDown={handleGizmoMouseDown}
             />
           )}
         </scene>

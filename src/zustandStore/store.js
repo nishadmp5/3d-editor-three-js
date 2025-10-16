@@ -9,34 +9,7 @@ const useStore = create(temporal((set) => ({
   // States
   objects: [],
   selectedObjectId: null,
-   saveRequest: 0,
-   saveOption:"top",
-
-  //  Context Menu state 
-  contextMenu:{
-    visible: false,
-    x:0,
-    y:0,
-    targetId:null
-  },
-
-  // File Name states
-  projectName:"My Room in 3D",
-
-
-
-  // Actions
-
-  // Action to set projectName 
-  setProjectName: (name)=> {
-    set(()=>({projectName: name}))
-  },
-
-  //Action to trigger save request
-  triggerSave: (option) => {
-    set((state)=>({ saveRequest: state.saveRequest + 1,saveOption: option}))
-  },
-
+   
  // Action to add an object
   addObject: (shapeId) => {
      const shapeConfig = SHAPES_MAP[shapeId];
@@ -52,11 +25,11 @@ const useStore = create(temporal((set) => ({
           ...shapeConfig.defaultProps,
           id: Date.now(),
           shapeId: shapeId,
-          position: [
-            (Math.random() - 0.5) * 9.64, 
-            shapeConfig.defaultProps.position[1],
-            (Math.random() - 0.5) * 8.14,
-          ],
+          // position: [
+          //   (Math.random() - 0.5) * 9.64, 
+          //   shapeConfig.defaultProps.position[1],
+          //   (Math.random() - 0.5) * 8.14,
+          // ],
            scale: [scaleFactor, scaleFactor, scaleFactor],
         },
       ],
@@ -82,14 +55,77 @@ const useStore = create(temporal((set) => ({
     }))
    },
 
+  //  Room settings related states 
+  roomSettings:{
+    wallTexture: null,
+    floorTexture:null,
+    roomBrightness:0.8,
+  },
+
+  // Actions on room settings 
+  setWallTexture: (textureId)=>{
+    set((state)=>({roomSettings:{...state.roomSettings,wallTexture: textureId}}))
+  },
+
+  setFloorTexture: (textureId)=>{
+    set((state)=>({roomSettings:{...state.roomSettings,floorTexture: textureId}}))
+  },
+
+  setBrightness: (value) => {
+    set((state) => ({
+      roomSettings: { ...state.roomSettings, roomBrightness: value },
+    }));
+  },
+
+  //  Saving related states 
+   saveRequest: 0,
+   saveOption:"top",
+
+   
+  //Action to trigger save request
+  triggerSave: (option) => {
+    set((state)=>({ saveRequest: state.saveRequest + 1,saveOption: option}))
+  },
+
+
+
+  //  Context Menu state 
+  contextMenu:{
+    visible: false,
+    x:0,
+    y:0,
+    targetId:null
+  },
+
+  
   //  Context Menu Actions 
   openContextMenu: (x,y,targetId)=>{
-    set({ contextMenu: {visible:true,x,y,targetId} })
+    set({ contextMenu: {visible:true,x,y,targetId},selectedObjectId:targetId })
   },
 
   closeContextMenu: ()=> {
     set((state) => ({ contextMenu: { ...state.contextMenu, visible: false } }));
   },
+
+  // Keyboard controls states 
+  lastEditedProperty:{
+    property:null,
+    axis: null,
+  },
+
+  setLastEditedProperty: (property,axis)=>{
+    set({lastEditedProperty:{property,axis}})
+  },
+
+  // projectName  states
+  projectName:"My Room in 3D",
+
+
+  // Action to set projectName 
+  setProjectName: (name)=> {
+    set(()=>({projectName: name}))
+  },
+
 
 }),{
   partialize: (state)=> ({objects:state.objects})

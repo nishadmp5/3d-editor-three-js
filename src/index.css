@@ -31,3 +31,7 @@
   --color-secondary: #f3f4f6;
   --color-grayborder: #e5e7eb;
 }
+
+button {
+  cursor: pointer;
+}

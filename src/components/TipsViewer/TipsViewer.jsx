@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const TIPS_LIST = [
-  "Tip: Right-click objects in the 3D view for quick actions like Delete.",
+  "Tip: Right-click objects in the 3D view for quick actions like Delete,Duplicate.",
   "Tip: Use the scroll wheel to zoom in and out of the scene.",
   "Tip: Hold Shift while dragging to move objects on a single axis.",
   "Tip: You can change wall and floor textures in the Scene Settings panel.",
-  "Tip: Click the project name in the top-left to rename your scene.",
+  "Tip: Right-click objects in the 3D view for changing transform properties.",
+  "Tip: Scroll down the sidebar to view transform properties.",
+  "Tip: Adjust the room brightness on sidebar for a better view.",
+  "Tip: Try to use the axis arrows for better control.",
+  "Tip: use Ctrl+Drag withing the viewer to adjust camera position.",
 ];
 
 const TipsViewer = () => {

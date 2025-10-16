@@ -53,7 +53,7 @@ const Topbar = () => {
               onChange={handleProjectNameChange}
               onBlur={() => setIsEditing(false)}
               onKeyDown={handleKeyDown}
-              className="bg-white border border-gray-300 rounded-md px-2 py-0.5 text-base font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="bg-white border border-gray-300 rounded-md px-2 py-0.5 text-base font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
             />
           ) : (
             <span

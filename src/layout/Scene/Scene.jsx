@@ -8,7 +8,9 @@ import { useEffect, useRef } from "react";
 import CaptureController from "../../components/CaptureController/CaptureController";
 import ObjectRenderer from "../../components/ObjectRenderer/ObjectRenderer";
 import RoomEnvironment from "../../components/RoomEnvironment/RoomEnvironment";
-import useStore from "../../zustandStore/store";
+import useObjectsStore from "../../store/useObjectsStore";
+import { useRoomStore } from "../../store/useRoomStore";
+import { useActivityStore } from "../../store/useActivityStore";
 
 
 const Scene = () => {
@@ -19,13 +21,15 @@ const Scene = () => {
     setSelectedObjectId,
     updateObjectProperties,
     addObject,
-    setLastEditedProperty,
-    roomSettings,
-  } = useStore();
+  } = useObjectsStore();
+
+  const { setLastEditedProperty } = useActivityStore();
+
+  const { roomSettings } = useRoomStore();
   
   const sceneRef = useRef();
   const selectedObject = sceneRef.current?.getObjectByName(selectedObjectId);
-  const selectedObjectConfig = objects.find((obj)=> obj.id === selectedObjectId)
+  const selectedObjectConfig = objects.find((obj)=> obj.id === selectedObjectId) || null
 
   const handleGizmoMouseDown = (event)=> {
     const axis =  event.target.axis;
@@ -67,7 +71,8 @@ const Scene = () => {
 
   useEffect(()=>{
     const handleKeyDown = (event)=>{
-      const { selectedObjectId, lastEditedProperty, objects, updateObjectProperties } = useStore.getState();
+      const { selectedObjectId, objects, updateObjectProperties } = useObjectsStore.getState();
+      const { lastEditedProperty } = useActivityStore.getState();
 
       if(!selectedObjectId && !lastEditedProperty.property) return;
       if(event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
@@ -112,18 +117,16 @@ const Scene = () => {
           <color attach="background" args={["#202025"]} />
 
           <ambientLight intensity={1.5} />
-          <pointLight position={[0, 3, 0]} intensity={20} castShadow />
+          <pointLight position={[0, 3, 0]} intensity={roomSettings.roomBrightness *10} castShadow />
           <Environment preset="apartment" environmentIntensity={roomSettings.roomBrightness * 0.5} />
-
-          {/* <directionalLight position={[10, 10, 5]} intensity={0.5} /> */}
 
           <RoomEnvironment />
 
-          {objects.map((object, index) => (
-            <ObjectRenderer key={index} objectProps={object} />
+          {objects.map((object) => (
+            <ObjectRenderer key={object.id} objectProps={object} />
           ))}
 
-          {selectedObjectId && selectedObject && (
+          { selectedObject && selectedObjectConfig && (
             <TransformControls
             mode={selectedObjectConfig.transformMode}
             showX={selectedObjectConfig.axisVisibility[selectedObjectConfig.transformMode].showX}

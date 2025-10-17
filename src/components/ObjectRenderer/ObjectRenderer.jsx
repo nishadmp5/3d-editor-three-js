@@ -1,10 +1,12 @@
 import { SHAPES_MAP } from "../../constants/shapeConfigs";
-import useStore from "../../zustandStore/store";
+import useObjectsStore from "../../store/useObjectsStore";
+import { useUIStore } from "../../store/useUIStore";
 
 const ObjectRenderer = ({ objectProps }) => {
   const { shapeId, id, position, rotation, scale, material } =
     objectProps || {};
-  const { setSelectedObjectId, openContextMenu } = useStore();
+  const { setSelectedObjectId } = useObjectsStore();
+  const { openContextMenu } = useUIStore();
 
   const handleObjectClick = (e) => {
     e.stopPropagation();

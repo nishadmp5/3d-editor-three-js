@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronDownIcon, DocumentIcon, RedoIcon, UndoIcon } from "../../components/Icons/Icons";
-import useStore, { useTemporalStore } from "../../zustandStore/store";
+import { BsFileEarmarkImage } from "react-icons/bs";
+import { FaRedoAlt, FaUndoAlt } from "react-icons/fa";
 import SaveButton from "../../components/SaveButton/SaveButton";
 import TipsViewer from "../../components/TipsViewer/TipsViewer";
+import { useTemporalStore } from "../../store/useObjectsStore";
+import { useUIStore } from "../../store/useUIStore";
 
 const Topbar = () => {
-  // const triggerSave = useStore((state) => state.triggerSave);
-  const { projectName, setProjectName } = useStore();
+  const { projectName, setProjectName } = useUIStore();
 
   const { undo, redo, pastStates, futureStates } = useTemporalStore(
     (state) => ({
@@ -23,7 +24,7 @@ const Topbar = () => {
   useEffect(() => {
     if (isEditing && inputRef.current) {
       inputRef.current.focus();
-      inputRef.current.select(); // Select all text for easy replacement
+      inputRef.current.select(); 
     }
   }, [isEditing]);
 
@@ -43,8 +44,8 @@ const Topbar = () => {
   return (
     <header className="w-full bg-white border-b border-gray-200 px-4 sm:px-6 py-2.5">
       <div className="flex items-center justify-between w-full">
-        <div className="flex items-center gap-x-3">
-          <DocumentIcon />
+        <div className="flex items-center gap-x-2">
+          <BsFileEarmarkImage className="text-primary text-xl"/>
           {isEditing ? (
             <input
               ref={inputRef}
@@ -78,7 +79,8 @@ const Topbar = () => {
             disabled={!canUndo}
             onClick={() => undo()}
           >
-            <UndoIcon />
+           <FaUndoAlt />
+
           </button>
           <button
             type="button"
@@ -87,7 +89,7 @@ const Topbar = () => {
             disabled={!canRedo}
             onClick={() => redo()}
           >
-            <RedoIcon />
+           <FaRedoAlt />
           </button>
 
          <SaveButton/>

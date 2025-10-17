@@ -1,8 +1,9 @@
 import { useThree } from "@react-three/fiber";
-import React, { useEffect } from "react";
-import useStore from "../../zustandStore/store";
+import { useEffect } from "react";
 import * as THREE from "three";
 import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter.js";
+import { useActivityStore } from "../../store/useActivityStore";
+import { useUIStore } from "../../store/useUIStore";
 
 const saveArrayBuffer = (buffer, filename) => {
   const blob = new Blob([buffer], { type: "application/octet-stream" });
@@ -17,13 +18,15 @@ const saveArrayBuffer = (buffer, filename) => {
 
 const CaptureController = () => {
   const { gl, scene, camera } = useThree();
-  const { saveRequest, saveOption, projectName } = useStore();
+  const { saveRequest, saveOption } = useActivityStore();
+  const { projectName } = useUIStore()
 
   useEffect(() => {
     if (saveRequest === 0) return;
 
     const safeProjectName = projectName.replace(/ /g, "_") || "scene";
 
+    //  CASE 1:  3D FILE EXPORT 
     if (saveOption === "3D") {
       const exporter = new GLTFExporter();
 
@@ -57,6 +60,22 @@ const CaptureController = () => {
 
       return;
     }
+
+    //  CASE 2:  2D IMAGE EXPORT OF CURRENT USER VIEW  
+    if (saveOption === "current") {
+      const dataUrl = gl.domElement.toDataURL("image/png");
+      
+      const link = document.createElement("a");
+      link.download = `${safeProjectName}_current_view.png`;
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      return; 
+    }
+
+    //  CASE 3:  2D IMAGE EXPORT All other cases 
     const width = 10;
     const height = 10;
 

@@ -1,24 +1,21 @@
-import React, { useState } from "react";
-import {
-  DuplicateIcon,
-  RotateIcon,
-  TranslateIcon,
-  TrashIcon,
-} from "../Icons/Icons";
-import useStore from "../../zustandStore/store";
+import { FaTrashCan } from "react-icons/fa6";
+import { IoCopyOutline, IoMove } from "react-icons/io5";
+import { MdOutlineRotate90DegreesCcw } from "react-icons/md";
+import useObjectsStore from "../../store/useObjectsStore";
+import { useUIStore } from "../../store/useUIStore";
 
 const ContextMenu = () => {
   const {
-    contextMenu,
-    closeContextMenu,
+    duplicateObject,
     deleteObject,
-    selectedObjectId,
     updateObjectProperties,
-  } = useStore();
+  } = useObjectsStore();
+  const { contextMenu,closeContextMenu } = useUIStore()
 
+  const targetObjectId = contextMenu.targetId
 
-  const targetObject = useStore((state) =>
-    state.objects.find((obj) => obj.id === state.contextMenu.targetId)
+  const targetObject = useObjectsStore((state) =>
+    state.objects.find((obj) => obj.id === targetObjectId)
   );
 
   if (!contextMenu.visible || !targetObject) {
@@ -33,6 +30,7 @@ const ContextMenu = () => {
   const handleDuplicate = () => {
     // Placeholder for duplicate functionality
     console.log("Duplicate object:", targetObject.id);
+    duplicateObject(targetObject.id);
     closeContextMenu();
   };
 
@@ -40,7 +38,7 @@ const ContextMenu = () => {
     updateObjectProperties(targetObject.id, {
       transformMode: transformProperty,
     });
-     closeContextMenu();
+    closeContextMenu();
   };
 
   const RadioButton = ({ selected }) => (
@@ -66,14 +64,14 @@ const ContextMenu = () => {
           onClick={handleDelete}
           className="flex items-center gap-x-2.5 w-full px-3 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600 transition-colors"
         >
-          <TrashIcon />
+          <FaTrashCan className="" />
           Delete
         </button>
         <button
           onClick={handleDuplicate}
           className="flex items-center gap-x-2.5 w-full px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
         >
-          <DuplicateIcon />
+          <IoCopyOutline className="text-base"/>
           Duplicate
         </button>
 
@@ -89,10 +87,8 @@ const ContextMenu = () => {
               onClick={() => handleTransformChange("rotate")}
               className="flex items-center gap-x-2.5 w-full px-3 py-1.5 text-sm font-medium text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
             >
-              <RadioButton
-                selected={targetObject.transformMode === "rotate"}
-              />
-              <RotateIcon />
+              <RadioButton selected={targetObject.transformMode === "rotate"} />
+              <MdOutlineRotate90DegreesCcw className="text-base"/>
               <span>Rotate</span>
             </button>
             <button
@@ -102,7 +98,7 @@ const ContextMenu = () => {
               <RadioButton
                 selected={targetObject.transformMode === "translate"}
               />
-              <TranslateIcon />
+              <IoMove className="text-base" />
               <span>Translate</span>
             </button>
           </div>

@@ -1,8 +1,8 @@
 import { useGLTF } from "@react-three/drei";
-import React, { useEffect, useMemo, useRef } from "react";
-import useStore from "../../zustandStore/store";
-import { ROOM_TEXTURE_MAP } from "../../constants/shapeConfigs";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
+import { FLOOR_TEXTURE_MAP, WALL_TEXTURE_MAP } from "../../constants/textures";
+import { useRoomStore } from "../../store/useRoomStore";
 
 
 const RoomEnvironment = () => {
@@ -10,10 +10,11 @@ const RoomEnvironment = () => {
   const clonedScene = useMemo(() => scene.clone(), [scene]);
   const originalMaterials = useRef({});
 
-  const { wallTexture: wallTextureId, floorTexture: floorTextureId } = useStore((state) => state.roomSettings);
+  const {  wallTextureId, floorTextureId } = useRoomStore((state) => state.roomSettings);
 
-  const wallTexturePath = ROOM_TEXTURE_MAP[wallTextureId];
-  const floorTexturePath = ROOM_TEXTURE_MAP[floorTextureId];
+
+  const wallTexturePath = WALL_TEXTURE_MAP[wallTextureId];
+  const floorTexturePath = FLOOR_TEXTURE_MAP[floorTextureId];
   
 
 
@@ -76,8 +77,3 @@ useGLTF.preload('/models/room.glb');
 
 
 export default RoomEnvironment;
-
-
-// Cube_Wall_0
-
-// Cube_Floor_0

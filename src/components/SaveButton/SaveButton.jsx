@@ -1,10 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
-import useStore from "../../zustandStore/store";
-import { ChevronDownIcon } from "../Icons/Icons";
+import { useEffect, useRef, useState } from "react";
+import { useActivityStore } from "../../store/useActivityStore";
 
 const SaveButton = () => {
-  const { triggerSave } = useStore();
-
+  const { triggerSave } = useActivityStore();
   const [isSaveMenuOpen, setIsSaveMenuOpen] = useState(false);
   const saveMenuRef = useRef(null);
 
@@ -25,7 +23,15 @@ const SaveButton = () => {
     setIsSaveMenuOpen(false);
   };
 
-  const saveOptions = ["top", "left", "right", "rear", "back", "3D"];
+  const saveOptions = [
+    { id: "current", label: "from Current View" },
+    { id: "3D", label: "as 3D Model" },
+    { id: "top", label: "from Top View" },
+    { id: "front", label: "from Front View" }, 
+    { id: "back", label: "from Back View" },
+    { id: "left", label: "from Left View" },
+    { id: "right", label: "from Right View" },
+  ];
 
   return (
     <div ref={saveMenuRef} className="relative">
@@ -36,7 +42,6 @@ const SaveButton = () => {
         title="Save as Image"
       >
         Save
-        <ChevronDownIcon dark={false} />
       </button>
 
       {/* Dropdown Menu */}
@@ -44,12 +49,12 @@ const SaveButton = () => {
         <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-50 py-1">
           <ul>
             {saveOptions.map((option) => (
-              <li key={option}>
+              <li key={option.id}>
                 <button
-                  onClick={() => handleSaveOptionClick(option)}
+                  onClick={() => handleSaveOptionClick(option.id)}
                   className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
-                  Save from {option} view
+                 {option.label}
                 </button>
               </li>
             ))}

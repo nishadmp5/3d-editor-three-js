@@ -12,7 +12,6 @@ const Sidebar = () => {
         <RoomSettings/>
         <TransformProperties />
         <AssetsListing />
-
         <TextureListing/>
       </div>
     </div>

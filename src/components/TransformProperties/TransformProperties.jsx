@@ -1,13 +1,17 @@
 import React from "react";
 import TransformInputRow from "../TransformInputRow/TransformInputRow";
-import useStore from "../../zustandStore/store";
+import useObjectsStore from "../../store/useObjectsStore";
+import { useActivityStore } from "../../store/useActivityStore";
+import { shallow } from "zustand/shallow";
 
 const TransformProperties = () => {
-  const { objects, selectedObjectId, updateObjectProperties, setLastEditedProperty  } =
-    useStore();
+  const { updateObjectProperties } = useObjectsStore();
 
-  const selectedObjectConfig = objects.find(
-    (obj) => obj.id === selectedObjectId
+  const { setLastEditedProperty } = useActivityStore();
+
+  const selectedObjectConfig = useObjectsStore(
+    (state) => state.objects.find((obj) => obj.id === state.selectedObjectId),
+    shallow
   );
 
   const handlePropertyChange = (property, axisIndex, value) => {
@@ -24,7 +28,7 @@ const TransformProperties = () => {
       [property]: currentValues,
     });
 
-    setLastEditedProperty(property,axisIndex)
+    setLastEditedProperty(property, axisIndex);
   };
 
   const position = selectedObjectConfig
@@ -57,7 +61,7 @@ const TransformProperties = () => {
               showY={selectedObjectConfig.axisVisibility.rotate.showY}
               showZ={selectedObjectConfig.axisVisibility.rotate.showZ}
               label="Rotation"
-  values={rotation.map((r) => r.toFixed(1))} // shows degrees
+              values={rotation.map((r) => r.toFixed(1))} // shows degrees
               onValueChange={(axis, value) =>
                 handlePropertyChange("rotation", axis, value)
               }

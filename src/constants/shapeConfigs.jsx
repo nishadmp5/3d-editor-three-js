@@ -18,14 +18,6 @@ useGLTF.preload("/models/gaming-pc.glb");
 
 export const CEILING_HEIGHT = 3.5;
 
-export const ROOM_TEXTURE_OPTIONS =  [
-      { id:"default", name: "Default", path: null },
-      { id:"wood1", name: "Wood1", path: "/textures/wood/wood-1.jpg" },
-      { id:"wood2", name: "Wood2", path: "/textures/wood/wood-2.jpg" },
-      { id:"wood3", name: "Wood3", path: "/textures/wood/wood-3.jpg" },
-    ]
-export const ROOM_TEXTURE_MAP = ROOM_TEXTURE_OPTIONS.reduce((acc, t) => ({...acc, [t.id]: t.path}), {});
-
 export const SHAPES = [
   {
     shapeId: "table",

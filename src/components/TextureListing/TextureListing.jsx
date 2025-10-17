@@ -1,14 +1,13 @@
-import React from 'react';
-import useStore from '../../zustandStore/store';
+import { RiColorFilterAiLine } from 'react-icons/ri';
 import { SHAPES_MAP } from '../../constants/shapeConfigs';
-import { RocketIcon } from '../Icons/Icons';
+import useObjectsStore from '../../store/useObjectsStore';
 
 
 
 const TextureListing = () => {
-  const { selectedObjectId, updateObjectProperties } = useStore();
+  const { selectedObjectId, updateObjectProperties } = useObjectsStore();
   
-  const selectedObject = useStore((state) =>
+  const selectedObject = useObjectsStore((state) =>
     state.objects.find((obj) => obj.id === selectedObjectId)
   );
 
@@ -16,7 +15,7 @@ const TextureListing = () => {
     return (
       <div className="p-4">
         <h3 className="flex items-center gap-x-2 text-lg font-bold text-gray-900 mb-4">
-            <RocketIcon />
+             <RiColorFilterAiLine />
             <span>Texture Catalogue</span>
         </h3>
         <p className="text-sm text-gray-500 italic">Select an object to see available textures.</p>
@@ -37,12 +36,12 @@ const TextureListing = () => {
   return (
     <div className="p-4">
       <h3 className="flex items-center gap-x-2 text-lg font-bold text-gray-900 mb-4">
-        <RocketIcon />
+        <RiColorFilterAiLine />
         <span>Texture Catalogue</span>
       </h3>
       
       {availableTextures.length > 0 ? (
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-4 gap-3">
           {availableTextures.map((texture) => (
             <button
               key={texture.name}

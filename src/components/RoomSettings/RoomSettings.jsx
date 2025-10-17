@@ -1,23 +1,27 @@
-import React, { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDownIcon, SettingsIcon } from "../Icons/Icons";
-import useStore from "../../zustandStore/store";
+import { useEffect, useRef, useState } from "react";
+import { GiSettingsKnobs } from "react-icons/gi";
+import { GoChevronDown } from "react-icons/go";
 import {
-  ROOM_TEXTURE_MAP,
-  ROOM_TEXTURE_OPTIONS,
-} from "../../constants/shapeConfigs";
+  FLOOR_TEXTURE_OPTIONS,
+  WALL_TEXTURE_OPTIONS
+} from "../../constants/textures";
+import { useRoomStore } from "../../store/useRoomStore";
+import RenderDropDown from "./RenderDropDown";
 
 const RoomSettings = () => {
   const { roomSettings, setWallTexture, setFloorTexture, setBrightness } =
-    useStore();
-  const { wallTexture, floorTexture, roomBrightness } = roomSettings;
+    useRoomStore();
+  const { wallTextureId, floorTextureId, roomBrightness } = roomSettings;
 
   const [openDropdown, setOpenDropdown] = useState(null);
 
   const dropdownRef = useRef(null);
 
   // Find the full object for display purposes
-  const getTextureById = (id) => ROOM_TEXTURE_OPTIONS.find((t) => t.id === id);
+  const getWallTextureById = (id) =>
+    WALL_TEXTURE_OPTIONS.find((t) => t.id === id);
+  const getFloorTextureById = (id) =>
+    FLOOR_TEXTURE_OPTIONS.find((t) => t.id === id);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -30,51 +34,11 @@ const RoomSettings = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const renderDropdown = (
-    textureOptions,
-    selectedTextureId,
-    onSelect,
-    type
-  ) => (
-    <AnimatePresence>
-      {openDropdown === type && (
-        <motion.ul
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          className="absolute z-10 w-full mt-2 bg-white rounded-md shadow-lg border border-gray-200 p-1"
-        >
-          {textureOptions.map((option) => (
-            <li key={option.id}>
-              <button
-                onClick={() => {
-                  onSelect(option.id);
-                  setOpenDropdown(null);
-                }}
-                className={`w-full flex items-center gap-x-3 text-left p-2 rounded-md text-sm transition-colors ${
-                  selectedTextureId === option.id
-                    ? "bg-blue-50 text-primary"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                <img
-                  src={option.image}
-                  alt={option.name}
-                  className="w-8 h-8 rounded-md object-cover"
-                />
-                <span className="font-medium">{option.name}</span>
-              </button>
-            </li>
-          ))}
-        </motion.ul>
-      )}
-    </AnimatePresence>
-  );
 
   return (
     <div className="p-4 bg-white">
       <h3 className="flex items-center gap-x-2 text-lg font-bold text-gray-900 mb-6">
-        <SettingsIcon />
+        <GiSettingsKnobs />
         <span>Room Settings</span>
       </h3>
 
@@ -93,15 +57,24 @@ const RoomSettings = () => {
             }
             className="flex items-center justify-between w-full bg-white border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
           >
-            <span>{getTextureById(wallTexture)?.name}</span>
-            <ChevronDownIcon />
+              {getWallTextureById(wallTextureId)?.id !== "default" && (
+                  <img
+                    src={getWallTextureById(wallTextureId)?.path}
+                    alt={getWallTextureById(wallTextureId)?.name}
+                    className="w-5.5 h-5.5 rounded-md object-cover"
+                  />
+                )}
+            <span>{getWallTextureById(wallTextureId)?.name}</span>
+           <GoChevronDown className="text-2xl text-gray-600" />
           </button>
-          {renderDropdown(
-            ROOM_TEXTURE_OPTIONS,
-            wallTexture,
-            setWallTexture,
-            "wall"
-          )}
+          <RenderDropDown
+            textureOptions={WALL_TEXTURE_OPTIONS}
+            selectedTextureId={wallTextureId}
+            onSelect={setWallTexture}
+            type={"wall"}
+            openDropdown={openDropdown}
+            setOpenDropdown={setOpenDropdown}
+          />
         </div>
 
         {/* Floor Texture Dropdown */}
@@ -118,15 +91,24 @@ const RoomSettings = () => {
             }
             className="flex items-center justify-between w-full bg-white border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
           >
-            <span>{getTextureById(floorTexture)?.name}</span>
-            <ChevronDownIcon />
+             {getFloorTextureById(floorTextureId)?.id !== "default" && (
+                  <img
+                    src={getFloorTextureById(floorTextureId)?.path}
+                    alt={getFloorTextureById(floorTextureId)?.name}
+                    className="w-5.5 h-5.5 rounded-md object-cover"
+                  />
+                )}
+            <span>{getFloorTextureById(floorTextureId)?.name}</span>
+            <GoChevronDown className="text-2xl text-gray-600" />
           </button>
-          {renderDropdown(
-            ROOM_TEXTURE_OPTIONS,
-            floorTexture,
-            setFloorTexture,
-            "floor"
-          )}
+          <RenderDropDown
+            textureOptions={FLOOR_TEXTURE_OPTIONS}
+            selectedTextureId={floorTextureId}
+            onSelect={setFloorTexture}
+            type={"floor"}
+            openDropdown={openDropdown}
+            setOpenDropdown={setOpenDropdown}
+          />
         </div>
 
         {/* Room Brightness Slider */}
@@ -141,8 +123,8 @@ const RoomSettings = () => {
               max={1}
               step={0.01}
               value={roomBrightness}
-              onChange={(e) =>  setBrightness(parseFloat(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary"
+              onChange={(e) => setBrightness(parseFloat(e.target.value))}
+              className="w-full h-1.5 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-400"
             />
             <span className="text-sm font-medium text-gray-600 w-10 text-right">
               {Math.round(roomBrightness * 100)}%

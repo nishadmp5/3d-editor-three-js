@@ -4,7 +4,7 @@ import {
   TransformControls
 } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import CaptureController from "../../components/CaptureController/CaptureController";
 import ObjectRenderer from "../../components/ObjectRenderer/ObjectRenderer";
 import RoomEnvironment from "../../components/RoomEnvironment/RoomEnvironment";
@@ -30,6 +30,13 @@ const Scene = () => {
   const sceneRef = useRef();
   const selectedObject = sceneRef.current?.getObjectByName(selectedObjectId);
   const selectedObjectConfig = objects.find((obj)=> obj.id === selectedObjectId) || null
+
+  const groupedObjects = useMemo(()=>{
+    return objects.reduce((acc,obj)=>{
+      (acc[obj.shapeId] = acc[obj.shapeId] || []).push(obj);
+      return acc;
+    },{})
+  },[objects])
 
   const handleGizmoMouseDown = (event)=> {
     const axis =  event.target.axis;

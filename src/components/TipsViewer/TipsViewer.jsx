@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 
 const TIPS_LIST = [
   "Tip: Right-click objects in the 3D view for quick actions like Delete,Duplicate,TransformControl.",
